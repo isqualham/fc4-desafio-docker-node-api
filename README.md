@@ -45,7 +45,7 @@ Tags publicadas:
 **Digest do índice multi-arquitetura:**
 
 ```text
-sha256:0de9db52bb0d3f2f428d0b6f222fdd8e7baee82501d157f0184791d92be49cb9
+sha256:8b0eb294d6f2834dfc5f4656d73816e4bf77e8b608efd14086c5449a3a1df74e
 ```
 
 Arquiteturas publicadas:
@@ -53,7 +53,7 @@ Arquiteturas publicadas:
 - `linux/amd64`
 - `linux/arm64`
 
-O tamanho reportado pelo Docker Scout para a imagem publicada na arquitetura ARM64 foi de **63 MB**. Os tamanhos exibidos pelo Docker local podem variar conforme a imagem, a arquitetura e as camadas armazenadas.
+O tamanho reportado pelo Docker Scout para a imagem publicada na arquitetura ARM64 foi de **63 MB**. Os tamanhos exibidos pelo Docker local podem variar conforme a arquitetura e as camadas armazenadas.
 
 ## Requisitos
 
@@ -101,7 +101,9 @@ docker compose --profile tools up -d
 
 Acesse http://localhost:8081.
 
-Use os dados definidos no arquivo `.env`, com o servidor de banco `db`. Para encerrar:
+Use os dados definidos no arquivo `.env`, com o servidor de banco `db`.
+
+Para encerrar os serviços:
 
 ```bash
 docker compose --profile tools down
@@ -158,17 +160,16 @@ A configuração de produção inclui política de reinicialização, limites de
 
 ## Segurança e cadeia de suprimentos
 
-A imagem foi publicada com Buildx para duas arquiteturas e com geração de SBOM e proveniência.
+A imagem foi publicada com Docker Buildx para duas arquiteturas, com geração de SBOM e proveniência.
 
-A construção publicada utilizou:
+O comando de construção utilizado foi:
 
 ```bash
 docker buildx build \
   --builder multiarch-builder \
   --platform linux/amd64,linux/arm64 \
-  --target production \
   --build-arg VERSION=1.0.0 \
-  --build-arg SOURCE=--build-arg SOURCE=https://github.com/isqualham/fc4-desafio-docker-node-api \
+  --build-arg SOURCE=https://github.com/isqualham/fc4-desafio-docker-node-api \
   --tag isqualham/flags-api:1.0.0 \
   --tag isqualham/flags-api:latest \
   --sbom=true \
@@ -191,7 +192,9 @@ docker scout cves registry://isqualham/flags-api:1.0.0
 
 O relatório gerado está disponível em `reports/scout-cves.txt`.
 
-Na análise registrada para a variante ARM64, o Docker Scout identificou 103 pacotes e não detectou pacotes vulneráveis: zero vulnerabilidades críticas, altas, médias ou baixas. Essa conclusão se refere à imagem e à análise realizadas; novas versões de dependências e novas bases de vulnerabilidades podem alterar resultados futuros.
+Na análise registrada para a variante ARM64, o Docker Scout identificou 103 pacotes e não detectou pacotes vulneráveis: zero vulnerabilidades críticas, altas, médias ou baixas.
+
+Essa conclusão se refere à imagem e à análise realizadas. Novas versões de dependências e novas informações sobre vulnerabilidades podem alterar resultados futuros.
 
 ## Validação do desafio
 

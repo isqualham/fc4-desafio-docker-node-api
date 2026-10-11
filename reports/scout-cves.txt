@@ -1,5 +1,6 @@
     i New version 1.26.0 available (installed version is 1.18.2) at https://github.com/docker/scout-cli
-    ✓ SBOM of image already cached, 103 packages indexed
+    ✓ SBOM obtained from attestation, 103 packages found
+    ✓ Provenance obtained from attestation
     ✓ No vulnerable package detected
 
 
@@ -8,7 +9,7 @@
                     │             Analyzed Image              
 ────────────────────┼─────────────────────────────────────────
   Target            │  registry://isqualham/flags-api:1.0.0   
-    digest          │  0ded6de4cfc6                           
+    digest          │  f6f693291d12                           
     platform        │ linux/arm64                             
     vulnerabilities │    0C     0H     0M     0L              
     size            │ 63 MB                                   
