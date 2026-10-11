@@ -1,0 +1,64 @@
+services:
+  migrate:
+    image: ${FLAGS_API_IMAGE:-isqualham/flags-api:1.0.0}
+    command: ["dist/db/migrate.js"]
+    env_file:
+      - .env
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - flags-prod-network
+
+  app:
+    image: ${FLAGS_API_IMAGE:-isqualham/flags-api:1.0.0}
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 256M
+    networks:
+      - flags-prod-network
+
+  db:
+    image: postgres:16.9-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-flags}
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    volumes:
+      - postgres-prod-data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+    networks:
+      - flags-prod-network
+
+volumes:
+  postgres-prod-data:
+
+networks:
+  flags-prod-network:
+    driver: bridge
